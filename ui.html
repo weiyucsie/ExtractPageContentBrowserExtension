@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Extract Page Content</title>
+    <link rel="stylesheet" href="ui.css" />
+  </head>
+  <body>
+    <main class="app">
+      <h1>擷取頁面內容</h1>
+      <p class="target" id="targetInfo">目標分頁：讀取中...</p>
+
+      <label for="modeSelect">擷取模式</label>
+      <select id="modeSelect">
+        <option value="selection">1. 目前選取文字</option>
+        <option value="main-text" selected>2. 頁面主要文字內容</option>
+        <option value="main-html">3. 頁面主要 HTML 結構</option>
+      </select>
+
+      <div class="actions">
+        <button id="extractBtn" type="button">擷取</button>
+        <button id="copyBtn" type="button">複製</button>
+      </div>
+
+      <label for="resultBox">結果（可直接編輯）</label>
+      <textarea id="resultBox" spellcheck="false"></textarea>
+
+      <p id="statusText" class="status"></p>
+    </main>
+
+    <script src="ui.js"></script>
+  </body>
+</html>
