@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Extract Page Content - 模式管理</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main class="page">
+      <h1>擷取模式管理</h1>
+      <p class="hint">
+        建議：Readmoo 購物車可用「清單欄位模式」，設定 item / 書名 / 價格 selector。
+      </p>
+
+      <section class="panel">
+        <label for="modeList">目前模式</label>
+        <select id="modeList" size="8"></select>
+        <div class="row">
+          <button id="newBtn" type="button">新增</button>
+          <button id="deleteBtn" type="button">刪除</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>模式內容</h2>
+
+        <label for="modeName">模式名稱</label>
+        <input id="modeName" type="text" placeholder="例如：Readmoo 購物車書名價格" />
+
+        <label for="modeType">模式類型</label>
+        <select id="modeType">
+          <option value="single">單一區塊</option>
+          <option value="list-fields">清單欄位（自訂欄位）</option>
+        </select>
+
+        <label for="urlPatterns">網址匹配（每行一條，空白 = 全部網址）</label>
+        <textarea
+          id="urlPatterns"
+          spellcheck="false"
+          placeholder="例如：&#10;readmoo.com&#10;https://readmoo.com/cart*"
+        ></textarea>
+
+        <div id="singleFields" class="block">
+          <label for="singleSelector">CSS Selector（空白 = 預設主要內容）</label>
+          <input id="singleSelector" type="text" />
+
+          <label for="singleExtractType">擷取內容類型</label>
+          <select id="singleExtractType">
+            <option value="text">文字</option>
+            <option value="html">HTML</option>
+          </select>
+
+          <label for="singleOutputFormat">輸出格式</label>
+          <select id="singleOutputFormat">
+            <option value="raw">原始內容</option>
+            <option value="json">JSON</option>
+            <option value="template">模板</option>
+          </select>
+
+          <label for="singleRemoveSelectors">HTML 清理 selector（僅 HTML 有效）</label>
+          <input id="singleRemoveSelectors" type="text" value="script, style, noscript" />
+
+          <label for="singleTemplate">輸出模板（使用 {{content}}）</label>
+          <textarea id="singleTemplate" spellcheck="false"></textarea>
+        </div>
+
+        <div id="listFields" class="block">
+          <label for="listItemSelector">Item selector（每一本書的容器）</label>
+          <input id="listItemSelector" type="text" />
+
+          <label>欄位設定（key + selector，相對於 item）</label>
+          <div id="listFieldsContainer" class="mini-list"></div>
+          <button id="addListFieldBtn" type="button">新增欄位</button>
+
+          <label for="listOutputFormat">輸出格式</label>
+          <select id="listOutputFormat">
+            <option value="template">模板</option>
+            <option value="json">JSON</option>
+          </select>
+
+          <label for="listItemTemplate">每一筆模板（可用 {{欄位key}}）</label>
+          <textarea id="listItemTemplate" spellcheck="false">{{title}} - {{price}}</textarea>
+
+          <label for="listJoinWith">多筆分隔字元（可輸入 \n）</label>
+          <input id="listJoinWith" type="text" value="\n" />
+        </div>
+
+        <div class="row">
+          <button id="saveBtn" type="button">儲存變更</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>匯入 / 匯出</h2>
+        <div class="row">
+          <button id="exportBtn" type="button">匯出 JSON</button>
+          <button id="importBtn" type="button">覆蓋匯入 JSON</button>
+        </div>
+        <label for="jsonBox">JSON 內容</label>
+        <textarea id="jsonBox" spellcheck="false" class="json-box"></textarea>
+      </section>
+
+      <p id="statusText" class="status"></p>
+    </main>
+
+    <script src="options.js"></script>
+  </body>
+</html>

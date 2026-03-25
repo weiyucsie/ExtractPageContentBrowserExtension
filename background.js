@@ -29,16 +29,47 @@ async function getSourceTabId() {
   return activeTab && typeof activeTab.id === "number" ? activeTab.id : null;
 }
 
+async function getTabContext(tabId) {
+  if (typeof tabId !== "number") {
+    return {
+      tabId: null,
+      url: "",
+      title: ""
+    };
+  }
+
+  try {
+    const tab = await browser.tabs.get(tabId);
+    return {
+      tabId,
+      url: tab && typeof tab.url === "string" ? tab.url : "",
+      title: tab && typeof tab.title === "string" ? tab.title : ""
+    };
+  } catch (error) {
+    return {
+      tabId,
+      url: "",
+      title: ""
+    };
+  }
+}
+
 browser.runtime.onMessage.addListener(async (message) => {
   if (!message || typeof message !== "object") {
     return null;
   }
 
   if (message.type === "getSourceTabId") {
-    const sourceTabId = await getSourceTabId();
+    const sourceTabId =
+      typeof message.preferredTabId === "number"
+        ? message.preferredTabId
+        : await getSourceTabId();
+    const tabContext = await getTabContext(sourceTabId);
     return {
-      sourceTabId,
-      windowId: lastClickedWindowId
+      sourceTabId: tabContext.tabId,
+      sourceTabUrl: tabContext.url,
+      sourceTabTitle: tabContext.title,
+      windowId: lastClickedWindowId || null
     };
   }
 
@@ -53,10 +84,21 @@ browser.runtime.onMessage.addListener(async (message) => {
     }
 
     try {
-      const response = await browser.tabs.sendMessage(tabId, {
-        type: "extractContent",
-        mode: message.mode
-      });
+      let response = null;
+      try {
+        response = await browser.tabs.sendMessage(tabId, {
+          type: "extractContent",
+          mode: message.mode
+        });
+      } catch (firstError) {
+        // If content script is not yet available on this tab (eg. page opened before reload),
+        // inject once and retry.
+        await browser.tabs.executeScript(tabId, { file: "content-script.js" });
+        response = await browser.tabs.sendMessage(tabId, {
+          type: "extractContent",
+          mode: message.mode
+        });
+      }
 
       if (!response || response.ok !== true) {
         return {

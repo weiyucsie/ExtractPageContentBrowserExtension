@@ -5,6 +5,7 @@
   "description": "Extract selected text, main text, or main HTML from the current page.",
   "permissions": [
     "activeTab",
+    "storage",
     "tabs",
     "<all_urls>"
   ],
@@ -19,6 +20,10 @@
   "sidebar_action": {
     "default_title": "Extract Page Content",
     "default_panel": "ui.html"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
   },
   "content_scripts": [
     {
